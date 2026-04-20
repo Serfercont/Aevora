@@ -3,20 +3,40 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float moveForce = 5f;
-    private Rigidbody rb;
-    private Vector2 moveInput;
-    private PlayerInput playerInput;
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float rotationSpeed = 5f;
 
-    private void Start()
+    private Rigidbody rb;
+    private Vector3 currentInput;
+
+    private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        playerInput = GetComponent<PlayerInput>();
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+    }
+    public void SetMovementInput(Vector3 input)
+    {
+        currentInput = input;
     }
     private void FixedUpdate()
     {
-        moveInput = playerInput.actions["Move"].ReadValue<Vector2>();
-        rb.AddForce(new Vector3(moveInput.x, 0, moveInput.y) * moveForce);
+        MovePlayer();
+        RotatePlayer();
+    }
+    private void MovePlayer()
+    {
+        Vector3 targetVelocity = currentInput * moveSpeed;
+        rb.linearVelocity = new Vector3(targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
+    }
+
+    private void RotatePlayer()
+    {
+        if (currentInput != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(currentInput);
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime));
+        }
     }
 
 }
