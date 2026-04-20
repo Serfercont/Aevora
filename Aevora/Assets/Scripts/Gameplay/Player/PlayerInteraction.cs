@@ -31,7 +31,7 @@ public class PlayerInteraction : MonoBehaviour
     }
 
     // Dibujamos la esfera en el editor para visualizar el rango de interacción
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, interactRange);
