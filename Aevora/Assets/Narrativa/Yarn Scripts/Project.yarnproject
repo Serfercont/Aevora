@@ -3,10 +3,7 @@
   "sourceFiles": [
     "**/*.yarn"
   ],
-  "excludeFiles": [
-    "**/*~/*",
-    "./Samples/Yarn Spinner*/*"
-  ],
+  "excludeFiles": [],
   "localisation": {},
   "baseLanguage": "es",
   "compilerOptions": {}

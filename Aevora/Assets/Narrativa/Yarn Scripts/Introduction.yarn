@@ -1,0 +1,35 @@
+﻿title: ZekeEncuentro
+---
+// Bloquear jugador
+<<toggle_move Player false>>
+
+Richie: ...Eh. Tranquilo.
+Zeke: *Se tensa, intentando incorporarse* ¡No te acerques!
+Richie: Si quisiera entregarte, no estaría hablando contigo.
+Zeke: Eso diría cualquiera de ellos.
+
+-> Richie: Mírame. ¿Acaso llevo su uniforme?
+    Zeke: No... Pero eso no significa nada.
+-> Richie: Vale. No confíes en mí. Yo seguiré sin las respuestas que necesito.
+    Zeke: ...Espera.
+
+Zeke: Los demás... siguen vivos. Están en el sótano. Toma, conseguí esta llave antes de que me cazaran.
+// Acción
+<<set $tieneLlaveSotano = true>>
+
+Zeke: Escucha... estoy mal. Si me traes un botiquín, podría aguantar.
+
+<<if has_item("botiquin", 1)>>
+    -> Richie: (Darle el botiquín) Toma, lo necesitas más que yo.
+        <<use_item Player "botiquin" 1>> // [cite: 7]
+        <<set $ayudoAZeke = true>>
+        Zeke: Gracias... Richie, ¿verdad? No lo olvidaré.
+    -> Richie: No tengo nada para ayudarte ahora...
+        Zeke: Entiendo... vete, antes de que los guardias vuelvan.
+<<else>>
+    -> Richie: No tengo nada para ayudarte ahora...
+        Zeke: Entiendo... vete, antes de que los guardias vuelvan.
+<<endif>>
+
+<<toggle_move Player true>>
+===

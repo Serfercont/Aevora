@@ -1,5 +1,7 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Yarn.Unity;
 
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerInteraction))]
@@ -18,8 +20,6 @@ public class Player : MonoBehaviour
         movementModule = GetComponent<PlayerMovement>();
         interactionModule = GetComponent<PlayerInteraction>();
         playerControls = new InputSystem_Actions();
-
-        playerControls.Player.Interact.performed += ctx => HandleInteractionInput();
     }
     private void OnEnable()
     {
@@ -63,5 +63,15 @@ public class Player : MonoBehaviour
         if (isDead || !canMove) return;
         
         interactionModule.TryInteract();
+    }
+
+    [YarnCommand("toggle_move")]
+    public void ToggleMovement(bool state)
+    {
+        canMove = state;
+        if(!state)
+        {
+            movementModule.SetMovementInput(Vector3.zero);
+        }
     }
 }

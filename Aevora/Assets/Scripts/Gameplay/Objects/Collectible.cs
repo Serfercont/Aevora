@@ -2,15 +2,29 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour, IInteractable
 {
-    [SerializeField] private string itemName = "Documento Secreto";
+    public enum ItemType { Ganzua, Botiquin, Llave }
+    
+    [SerializeField] private ItemType type;
+    [SerializeField] private string keyID;
+    [SerializeField] private int amount = 1;
 
     public void Interact(GameObject player)
     {
-        Debug.Log($"Has recogido: {itemName}");
-        Destroy(gameObject); 
+        PlayerInventory inventory = player.GetComponent<PlayerInventory>();
+        
+        if (inventory != null)
+        {
+            if (type == ItemType.Llave) 
+                inventory.AddKey(keyID);
+            else 
+                inventory.AddItem(type.ToString(), amount);
+
+            Destroy(gameObject);
+        }
     }
+
     public string GetInteractionPrompt()
     {
-        return $"Presiona 'E' para recoger {itemName}";
+        return type == ItemType.Llave ? $"Presiona 'E' para recoger Llave: {keyID}" : $"Presiona 'E' para recoger {type}";
     }
 }
