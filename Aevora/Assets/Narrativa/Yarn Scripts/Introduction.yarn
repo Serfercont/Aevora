@@ -15,13 +15,13 @@ Zeke: Eso diría cualquiera de ellos.
 
 Zeke: Los demás... siguen vivos. Están en el sótano. Toma, conseguí esta llave antes de que me cazaran.
 // Acción
-<<set $tieneLlaveSotano = true>>
+<<add_item Player "ganzua" 1>>
 
 Zeke: Escucha... estoy mal. Si me traes un botiquín, podría aguantar.
 
 <<if has_item("botiquin", 1)>>
     -> Richie: (Darle el botiquín) Toma, lo necesitas más que yo.
-        <<use_item Player "botiquin" 1>> // [cite: 7]
+        <<use_item Player "botiquin" 1>>
         <<set $ayudoAZeke = true>>
         Zeke: Gracias... Richie, ¿verdad? No lo olvidaré.
     -> Richie: No tengo nada para ayudarte ahora...

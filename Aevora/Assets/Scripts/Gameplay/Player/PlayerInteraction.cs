@@ -9,9 +9,27 @@ public class PlayerInteraction : MonoBehaviour
 
     [SerializeField] private FloatingInteractionUI interactionUI;
     private IInteractable currentInteractable;
+    private Player player;
+
+    private void Awake()
+    {
+        player = GetComponent<Player>();
+    }
 
     private void Update()
     {
+        if (player != null && (player.isDead || !player.canMove))
+        {
+            if (currentInteractable != null)
+            {
+                currentInteractable = null;
+                if (interactionUI != null)
+                    interactionUI.Hide();
+            }
+
+            return;
+        }
+
         CheckNearbyInteractables();
     }
     public void TryInteract()
@@ -41,12 +59,14 @@ public class PlayerInteraction : MonoBehaviour
                 if (currentInteractable != interactableObject)
                 {
                     currentInteractable = interactableObject;
-                    interactionUI.Show(currentInteractable.GetInteractionPrompt(), hitColliders[0].transform.position);
+                    if (interactionUI != null)
+                        interactionUI.Show(currentInteractable.GetInteractionPrompt(), hitColliders[0].transform.position);
                     return;
                 }
             }
         }
         currentInteractable = null;
-        interactionUI.Hide();
+        if (interactionUI != null)
+            interactionUI.Hide();
     }
 }
