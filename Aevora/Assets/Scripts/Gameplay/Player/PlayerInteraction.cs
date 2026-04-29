@@ -37,6 +37,8 @@ public class PlayerInteraction : MonoBehaviour
         if(currentInteractable != null)
         {
             currentInteractable.Interact(gameObject);
+            currentInteractable = null;
+            interactionUI.Hide();
         }
     }
 
@@ -46,14 +48,11 @@ public class PlayerInteraction : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, interactRange);
     }
 
-    private void CheckNearbyInteractables()
+    private void OnTriggerEnter(Collider other)
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactRange, interactableLayer);
-
-        if (hitColliders.Length > 0)
+        if (((1 << other.gameObject.layer) & interactableLayer) != 0)
         {
-            IInteractable interactableObject = hitColliders[0].GetComponent<IInteractable>();
-
+            IInteractable interactableObject = other.GetComponent<IInteractable>();
             if (interactableObject != null)
             {
                 if (currentInteractable != interactableObject)
@@ -69,4 +68,38 @@ public class PlayerInteraction : MonoBehaviour
         if (interactionUI != null)
             interactionUI.Hide();
     }
+    private void OnTriggerExit(Collider other)
+    {
+        if (((1 << other.gameObject.layer) & interactableLayer) != 0)
+        {
+            IInteractable interactableObject = other.GetComponent<IInteractable>();
+            if (interactableObject != null && interactableObject == currentInteractable)
+            {
+                currentInteractable = null;
+                interactionUI.Hide();
+            }
+        }
+    }
+    // private void CheckNearbyInteractables()
+    // {
+    //     Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactRange, interactableLayer);
+
+    //     if (hitColliders.Length > 0)
+    //     {
+    //         IInteractable interactableObject = hitColliders[0].GetComponent<IInteractable>();
+
+    //         if (interactableObject != null)
+    //         {
+    //             if (currentInteractable != interactableObject)
+    //             {
+    //                 currentInteractable = interactableObject;
+    //                 interactionUI.Show(currentInteractable.GetInteractionPrompt(), hitColliders[0].transform.position);
+    //                 return;
+    //             }
+    //         }
+    //     }
+    //     currentInteractable = null;
+    //     interactionUI.Hide();
+    // }
+
 }

@@ -1,10 +1,14 @@
 using UnityEngine;
 using Yarn.Unity;
 using System.Collections.Generic;
+using System;
 
 public class PlayerInventory : MonoBehaviour
 {
     private static PlayerInventory instance;
+
+    public event Action<string, float> OnInventoryAdded;
+    public event Action<string, float> OnInventoryRemoved;
 
     [Header("Recursos Actuales")]
     public int lockpicks = 2;
@@ -26,6 +30,7 @@ public class PlayerInventory : MonoBehaviour
             case "ganzua": lockpicks += intAmount; break;
             case "botiquin": medkits += intAmount; break;
         }
+        OnInventoryAdded?.Invoke(itemName, amount);
     }
 
     [YarnFunction("has_item")]
@@ -47,6 +52,7 @@ public class PlayerInventory : MonoBehaviour
         int intAmount = (int)amount;
         if (itemName.ToLower() == "ganzua") lockpicks = Mathf.Max(0, lockpicks - intAmount);
         if (itemName.ToLower() == "botiquin") medkits = Mathf.Max(0, medkits - intAmount);
+        OnInventoryRemoved?.Invoke(itemName, amount);
     }
 
     [YarnCommand("add_key")]
