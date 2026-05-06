@@ -23,6 +23,7 @@ public class SpatialNarrativeUI : MonoBehaviour
 
     private bool isOpen;
     private bool hasReadableText;
+    private bool frameJustOpened;
 
     private CursorLockMode previousCursorLockMode;
     private bool previousCursorVisible;
@@ -54,10 +55,39 @@ public class SpatialNarrativeUI : MonoBehaviour
         if (!isOpen)
             return;
 
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (frameJustOpened)
         {
-            Close();
+            frameJustOpened = false;
             return;
+        }
+
+        if (Keyboard.current != null)
+        {
+            if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                if (textRoot.activeSelf)
+                {
+                    textRoot.SetActive(false);
+
+                    if (readToggleButton != null) 
+                        readToggleButton.gameObject.SetActive(true);
+                }
+                else
+                {
+                    Close();
+                }
+                return;
+            }
+
+            if (Keyboard.current.eKey.wasPressedThisFrame)
+            {
+                if (hasReadableText && !textRoot.activeSelf)
+                {
+                    textRoot.SetActive(true);
+                    if (readToggleButton != null) 
+                        readToggleButton.gameObject.SetActive(false);
+                }
+            }
         }
     }
 
@@ -107,6 +137,7 @@ public class SpatialNarrativeUI : MonoBehaviour
         }
 
         isOpen = true;
+        frameJustOpened = true;
 
         canvas.enabled = true;
 
@@ -116,11 +147,16 @@ public class SpatialNarrativeUI : MonoBehaviour
         hasReadableText = !string.IsNullOrWhiteSpace(readableText);
         readToggleButton.gameObject.SetActive(hasReadableText);
         textRoot.SetActive(false);
+        
+        if (readToggleButton != null)
+            readToggleButton.gameObject.SetActive(hasReadableText);
+            
+        textRoot.SetActive(false);
 
         if (hasReadableText)
         {
             bodyText.text = readableText;
-            SetReadToggleLabel("Leer");
+            SetReadToggleLabel("Presiona 'E' para leer");
         }
         else
         {
@@ -190,7 +226,6 @@ public class SpatialNarrativeUI : MonoBehaviour
     {
         if (canvas != null && artworkImage != null && closeButton != null && readToggleButton != null && textRoot != null && bodyText != null)
         {
-            WireButtons();
             EnsureEventSystemExists();
             return;
         }
@@ -219,7 +254,6 @@ public class SpatialNarrativeUI : MonoBehaviour
         }
 
         BuildDefaultUIIfNeeded();
-        WireButtons();
         EnsureEventSystemExists();
     }
 
@@ -288,12 +322,13 @@ public class SpatialNarrativeUI : MonoBehaviour
         GameObject textPanel = new GameObject("TextRoot", typeof(RectTransform), typeof(Image));
         textPanel.transform.SetParent(panel.transform, false);
         RectTransform textPanelRect = textPanel.GetComponent<RectTransform>();
-        textPanelRect.anchorMin = new Vector2(0.05f, 0.17f);
-        textPanelRect.anchorMax = new Vector2(0.95f, 0.33f);
+        textPanelRect.anchorMin = new Vector2(0.05f, 0.05f);
+        textPanelRect.anchorMax = new Vector2(0.95f, 0.95f);
+        
         textPanelRect.offsetMin = Vector2.zero;
         textPanelRect.offsetMax = Vector2.zero;
         Image textPanelBg = textPanel.GetComponent<Image>();
-        textPanelBg.color = new Color(0f, 0f, 0f, 0.15f);
+        textPanelBg.color = new Color(0.1f, 0.1f, 0.1f, 0.95f);
 
         GameObject viewport = new GameObject("Viewport", typeof(RectTransform), typeof(Image), typeof(RectMask2D));
         viewport.transform.SetParent(textPanel.transform, false);
@@ -317,7 +352,7 @@ public class SpatialNarrativeUI : MonoBehaviour
         tmp.text = string.Empty;
         tmp.enableWordWrapping = true;
         tmp.fontSize = 24f;
-        tmp.color = Color.black;
+        tmp.color = Color.white;
 
         ContentSizeFitter fitter = bodyTextGO.GetComponent<ContentSizeFitter>();
         fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
@@ -395,21 +430,6 @@ public class SpatialNarrativeUI : MonoBehaviour
         tmp.color = Color.black;
 
         return buttonGO;
-    }
-
-    private void WireButtons()
-    {
-        if (closeButton != null)
-        {
-            closeButton.onClick.RemoveListener(Close);
-            closeButton.onClick.AddListener(Close);
-        }
-
-        if (readToggleButton != null)
-        {
-            readToggleButton.onClick.RemoveListener(ToggleRead);
-            readToggleButton.onClick.AddListener(ToggleRead);
-        }
     }
 
     private void EnsureEventSystemExists()
