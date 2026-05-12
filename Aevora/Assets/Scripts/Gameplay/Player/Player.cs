@@ -12,12 +12,15 @@ public class Player : MonoBehaviour, IPlayerState
     private PlayerMovement movementModule;
     private PlayerInteraction interactionModule;
     private InputSystem_Actions controls;
+    public Vector3 LastCheckpointPosition { get; set; }
 
     private void Awake()
     {
         movementModule = GetComponent<PlayerMovement>();
         interactionModule = GetComponent<PlayerInteraction>();
         controls = new InputSystem_Actions();
+
+        LastCheckpointPosition = transform.position;
     }
 
     private void OnEnable()
