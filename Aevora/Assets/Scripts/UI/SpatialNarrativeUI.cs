@@ -121,7 +121,7 @@ public class SpatialNarrativeUI : MonoBehaviour
 
         if (lockPlayerMovement && currentPlayer != null)
         {
-            previousCanMove = currentPlayer.canMove;
+            previousCanMove = currentPlayer.CanMove;
             currentPlayer.ToggleMovement(false);
             restoreMovementOnClose = true;
         }

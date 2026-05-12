@@ -3,7 +3,57 @@ guid: 33681ae13d9e8f0429d38747582b3f3a
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Armor_02
+    second: {fileID: 2100000, guid: 4fb35922fc6fb27499ac266ab6183e2c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_010
+    second: {fileID: 2100000, guid: 67526297181c1e54fb8dc02858995f10, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_011
+    second: {fileID: 2100000, guid: 02040cfa9d902bc4daf9c2a3187f9850, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_012
+    second: {fileID: 2100000, guid: 5e5709f4bb268a741836ba6ece746db3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_02
+    second: {fileID: 2100000, guid: 1769010d21bc09d4ab092c442bc6ecd2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_06
+    second: {fileID: 2100000, guid: a6659b536c528b347887e4ce112af76c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_07
+    second: {fileID: 2100000, guid: f2d8ae65c25edce44901efa428b85a85, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_08
+    second: {fileID: 2100000, guid: 03eb3cf34eb00ef4f8a55f7ee9d147c3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leather_09
+    second: {fileID: 2100000, guid: 4beb9f938cde52a4aa4966cea7ff08d6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Skin
+    second: {fileID: 2100000, guid: afaf0583b2a74fc4899a53672e4513d9, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -303,7 +353,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 0
+  avatarSetup: 1
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   importBlendShapeDeformPercent: 1
   remapMaterialsIfMaterialImportModeIsNone: 0

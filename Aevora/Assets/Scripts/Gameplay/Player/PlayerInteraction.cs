@@ -2,44 +2,77 @@ using UnityEngine;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    [Header("Configuración de Interacción")]
-    [Tooltip("Distancia máxima para interactuar con objetos.")]
-    [SerializeField] private float interactRange = 2f;
+    [Header("Settings")]
+    [SerializeField] private float     interactRange    = 2f;
     [SerializeField] private LayerMask interactableLayer;
 
+    [Header("References")]
     [SerializeField] private FloatingInteractionUI interactionUI;
-    private IInteractable currentInteractable;
-    private Player player;
+
+    private IPlayerState      _state;
+    private IInteractable     _current;
 
     private void Awake()
     {
-        player = GetComponent<Player>();
+
+        _state = GetComponent<IPlayerState>();
     }
 
     private void Update()
     {
-        if (player != null && (player.isDead || !player.canMove))
+        if (_state.IsDead || !_state.CanMove)
         {
-            if (currentInteractable != null)
-            {
-                currentInteractable = null;
-                if (interactionUI != null)
-                    interactionUI.Hide();
-            }
-
+            ClearCurrent();
             return;
         }
 
-        CheckNearbyInteractables();
+        TrackNearestInteractable();
     }
+
     public void TryInteract()
     {
-        if(currentInteractable != null)
+        if (_current == null) return;
+        _current.Interact(gameObject);
+        ClearCurrent();
+    }
+
+
+
+    private void TrackNearestInteractable()
+    {
+        IInteractable nearest = FindNearest();
+
+        if (nearest == _current) return;    // Nothing changed
+
+        _current = nearest;
+
+        if (_current != null)
         {
-            currentInteractable.Interact(gameObject);
-            currentInteractable = null;
+            Vector3 pos = (_current as Component)?.transform.position ?? transform.position;
+            interactionUI.Show(_current.GetInteractionPrompt(), pos);
+        }
+        else
+        {
             interactionUI.Hide();
         }
+    }
+
+    private IInteractable FindNearest()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, interactRange, interactableLayer);
+        foreach (Collider hit in hits)
+        {
+            IInteractable found = hit.GetComponent<IInteractable>();
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private void ClearCurrent()
+    {
+        if (_current == null) return;
+        _current = null;
+        interactionUI.Hide();
     }
 
     private void OnDrawGizmos()
@@ -47,42 +80,4 @@ public class PlayerInteraction : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, interactRange);
     }
-    private void OnTriggerExit(Collider other)
-    {
-        if (((1 << other.gameObject.layer) & interactableLayer) != 0)
-        {
-            IInteractable interactableObject = other.GetComponent<IInteractable>();
-            if (interactableObject != null && interactableObject == currentInteractable)
-            {
-                currentInteractable = null;
-                interactionUI.Hide();
-            }
-        }
-    }
-    private void CheckNearbyInteractables()
-    {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, interactRange, interactableLayer);
-
-        if (hitColliders.Length > 0)
-        {
-            IInteractable interactableObject = hitColliders[0].GetComponent<IInteractable>();
-
-            if (interactableObject != null)
-            {
-                if (currentInteractable != interactableObject)
-                {
-                    currentInteractable = interactableObject;
-                    interactionUI.Show(currentInteractable.GetInteractionPrompt(), hitColliders[0].transform.position);
-               }
-               return;
-            }
-        }
-        if(currentInteractable !=null)
-        {
-            currentInteractable = null;
-            interactionUI.Hide();
-        }
-        
-    }
-
 }

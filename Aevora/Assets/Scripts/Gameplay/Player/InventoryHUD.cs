@@ -43,7 +43,7 @@ public class InventoryHUD : MonoBehaviour
             return;
         }
 
-        if (inventory.lockpicks != lastLockpicks || inventory.medkits != lastMedkits)
+        if (inventory.Lockpicks != lastLockpicks || inventory.Medkits != lastMedkits)
         {
             RefreshBar();
         }
@@ -83,8 +83,8 @@ public class InventoryHUD : MonoBehaviour
     {
         if (inventory == null) return;
 
-        lastLockpicks = inventory.lockpicks;
-        lastMedkits = inventory.medkits;
+        lastLockpicks = inventory.Lockpicks;
+        lastMedkits = inventory.Medkits;
 
         UpdateItem(lockpickItem, lastLockpicks);
         UpdateItem(medkitItem, lastMedkits);
