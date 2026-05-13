@@ -21778,6 +21778,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8834359373905543085, guid: a8857bba75c60de4dbc05fbf28cdc04c, type: 3}
+      propertyPath: startLockpicks
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 9203514305284123184, guid: a8857bba75c60de4dbc05fbf28cdc04c, type: 3}
       propertyPath: m_Name
       value: Player

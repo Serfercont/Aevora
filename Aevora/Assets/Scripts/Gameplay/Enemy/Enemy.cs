@@ -105,15 +105,14 @@ public class Enemy : MonoBehaviour
         }
 
         Player playerScript = player.GetComponent<Player>();
-        if (playerScript != null)
-        {
-            player.transform.position = playerScript.LastCheckpointPosition;
-        }
-
-
         Rigidbody playerRb = player.GetComponent<Rigidbody>();
-        playerRb.linearVelocity = Vector3.zero;
-        playerRb.angularVelocity = Vector3.zero;
+
+        if (playerRb != null && playerScript != null)
+        {
+            playerRb.position = playerScript.LastCheckpointPosition; // Teletransporte físico
+            playerRb.linearVelocity = Vector3.zero;
+            playerRb.angularVelocity = Vector3.zero;
+        }
 
         animator.ResetTrigger("playerfound");
         
