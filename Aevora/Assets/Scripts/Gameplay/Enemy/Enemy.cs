@@ -14,10 +14,15 @@ public class Enemy : MonoBehaviour
     private bool isWaiting= false;
     private bool isAttacking = false;
 
+    private Vector3 initialModelLocalPos;
+    private Quaternion initialModelLocalRot;
+
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        initialModelLocalPos = animator.transform.localPosition;
+        initialModelLocalRot = animator.transform.localRotation;
         if(waypoints.Length > 0)
         {
             MoveToNextWaypoint();
@@ -109,7 +114,7 @@ public class Enemy : MonoBehaviour
 
         if (playerRb != null && playerScript != null)
         {
-            playerRb.position = playerScript.LastCheckpointPosition; // Teletransporte físico
+            playerRb.position = playerScript.LastCheckpointPosition;
             playerRb.linearVelocity = Vector3.zero;
             playerRb.angularVelocity = Vector3.zero;
         }
@@ -121,6 +126,16 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         animator.ResetTrigger("playerdead");
+
+        if (animator != null)
+        {
+            animator.transform.localPosition = initialModelLocalPos;
+            animator.transform.localRotation = initialModelLocalRot;
+        }
+
+        transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
+
+
         isAttacking = false;
 
         navMeshAgent.isStopped = false;
