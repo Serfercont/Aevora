@@ -10,9 +10,13 @@ public class FieldOfView : MonoBehaviour
     public float meshResolution;
     public int edgeResolveIterations;
     public float edgeDstThreshold;
-
-    [Tooltip("Distancia que penetra la malla en los muros para revelar sus bordes.")]
     public float maskCutawayDst = .1f;
+
+    [Header("Gestión de Capas de Enemigos")]
+    [Tooltip("El nombre de la capa cuando el enemigo NO está a la vista.")]
+    public string hiddenLayerName = "OcultoPorFOV";
+    [Tooltip("El nombre de la capa cuando el enemigo SÍ está a la vista.")]
+    public string visibleLayerName = "Enemy";
 
     [Header("Capas (Layers)")]
     public LayerMask targetMask;
@@ -23,14 +27,17 @@ public class FieldOfView : MonoBehaviour
 
     [HideInInspector]
     public List<Transform> visibleTargets = new List<Transform>();
+    
+    private List<Transform> previouslyVisibleTargets = new List<Transform>();
 
     private Mesh viewMesh;
-
-    // OPTIMIZACIÓN: Caching de variables para no generar "Basura" (Garbage Collection) en el Update
-    private Collider[] targetsInViewRadius = new Collider[50]; // Soporta hasta 50 objetivos simultáneos
+    private Collider[] targetsInViewRadius = new Collider[50]; 
     private List<Vector3> viewPoints = new List<Vector3>();
     private List<Vector3> vertices = new List<Vector3>();
     private List<int> triangles = new List<int>();
+
+    private int hiddenLayerIndex;
+    private int visibleLayerIndex;
 
     void Start() 
     {
@@ -38,12 +45,14 @@ public class FieldOfView : MonoBehaviour
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
 
+        hiddenLayerIndex = LayerMask.NameToLayer(hiddenLayerName);
+        visibleLayerIndex = LayerMask.NameToLayer(visibleLayerName);
+
         StartCoroutine(FindTargetsWithDelay(0.2f));
     }
 
     IEnumerator FindTargetsWithDelay(float delay) 
     {
-        // Optimización: Cacheamos el WaitForSeconds
         WaitForSeconds wait = new WaitForSeconds(delay);
         while (true) 
         {
@@ -61,7 +70,6 @@ public class FieldOfView : MonoBehaviour
     {
         visibleTargets.Clear();
         
-        // OPTIMIZACIÓN: OverlapSphereNonAlloc no crea arrays nuevos, recicla el que le damos.
         int targetsFound = Physics.OverlapSphereNonAlloc(transform.position, viewRadius, targetsInViewRadius, targetMask);
 
         for (int i = 0; i < targetsFound; i++) 
@@ -78,6 +86,38 @@ public class FieldOfView : MonoBehaviour
                 }
             }
         }
+
+        foreach (Transform prevTarget in previouslyVisibleTargets)
+        {
+            if (prevTarget != null && !visibleTargets.Contains(prevTarget))
+            {
+                SetLayerRecursively(prevTarget.gameObject, hiddenLayerIndex);
+            }
+        }
+
+        foreach (Transform target in visibleTargets)
+        {
+            if (!previouslyVisibleTargets.Contains(target))
+            {
+                SetLayerRecursively(target.gameObject, visibleLayerIndex);
+            }
+        }
+
+        previouslyVisibleTargets.Clear();
+        previouslyVisibleTargets.AddRange(visibleTargets);
+    }
+    private void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (obj == null) return;
+        obj.layer = newLayer;
+
+        foreach (Transform child in obj.transform)
+        {
+            if (child != null)
+            {
+                SetLayerRecursively(child.gameObject, newLayer);
+            }
+        }
     }
 
     void DrawFieldOfView() 
@@ -85,7 +125,7 @@ public class FieldOfView : MonoBehaviour
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
         float stepAngleSize = viewAngle / stepCount;
         
-        viewPoints.Clear(); // Reutilizamos la lista en vez de crear una nueva
+        viewPoints.Clear(); 
         ViewCastInfo oldViewCast = new ViewCastInfo();
 
         for (int i = 0; i <= stepCount; i++) 
@@ -113,15 +153,12 @@ public class FieldOfView : MonoBehaviour
         vertices.Clear();
         triangles.Clear();
 
-        vertices.Add(Vector3.zero);
+        vertices.Add(Vector3.zero); 
         
         for (int i = 0; i < vertexCount - 1; i++) 
         {
-            // CORRECCIÓN VISUAL CRÍTICA:
-            // Calculamos la dirección real hacia el punto para empujarlo dentro del muro correctamente.
             Vector3 dir = (viewPoints[i] - transform.position).normalized;
             Vector3 pushedPoint = viewPoints[i] + (dir * maskCutawayDst);
-            
             vertices.Add(transform.InverseTransformPoint(pushedPoint));
 
             if (i < vertexCount - 2) 
@@ -133,7 +170,6 @@ public class FieldOfView : MonoBehaviour
         }
 
         viewMesh.Clear();
-        // Usamos SetVertices y SetTriangles con listas, otra optimización nativa de Unity.
         viewMesh.SetVertices(vertices);
         viewMesh.SetTriangles(triangles, 0);
         viewMesh.RecalculateNormals();

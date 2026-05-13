@@ -53,8 +53,8 @@ Material:
     m_Floats:
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Transparencia: 0
+    - _Transparencia: 1
     m_Colors:
-    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 0.021057477, g: 0.2784314, b: 0.23584905, a: 0.40392157}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
