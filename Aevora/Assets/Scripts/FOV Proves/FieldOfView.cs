@@ -6,17 +6,11 @@ public class FieldOfView : MonoBehaviour
 {
     [Header("Configuración de Visión")]
     public float viewRadius;
-    [Range(0,360)] public float viewAngle;
+    [Range(0, 360)] public float viewAngle;
     public float meshResolution;
     public int edgeResolveIterations;
     public float edgeDstThreshold;
     public float maskCutawayDst = .1f;
-
-    [Header("Gestión de Capas de Enemigos")]
-    [Tooltip("El nombre de la capa cuando el enemigo NO está a la vista.")]
-    public string hiddenLayerName = "OcultoPorFOV";
-    [Tooltip("El nombre de la capa cuando el enemigo SÍ está a la vista.")]
-    public string visibleLayerName = "Enemy";
 
     [Header("Capas (Layers)")]
     public LayerMask targetMask;
@@ -27,17 +21,18 @@ public class FieldOfView : MonoBehaviour
 
     [HideInInspector]
     public List<Transform> visibleTargets = new List<Transform>();
-    
+
     private List<Transform> previouslyVisibleTargets = new List<Transform>();
 
     private Mesh viewMesh;
-    private Collider[] targetsInViewRadius = new Collider[50]; 
-    private List<Vector3> viewPoints = new List<Vector3>();
-    private List<Vector3> vertices = new List<Vector3>();
-    private List<int> triangles = new List<int>();
+    private Collider[] targetsInViewRadius = new Collider[50];
+    private List<Vector3> viewPoints  = new List<Vector3>();
+    private List<Vector3> vertices    = new List<Vector3>();
+    private List<int>     triangles   = new List<int>();
 
     private int hiddenLayerIndex;
-    private int visibleLayerIndex;
+
+    // ─── Ciclo de vida ────────────────────────────────────────────────────────
 
     void Start() 
     {
@@ -45,11 +40,31 @@ public class FieldOfView : MonoBehaviour
         viewMesh.name = "View Mesh";
         viewMeshFilter.mesh = viewMesh;
 
-        hiddenLayerIndex = LayerMask.NameToLayer(hiddenLayerName);
-        visibleLayerIndex = LayerMask.NameToLayer(visibleLayerName);
+        hiddenLayerIndex = LayerMask.NameToLayer("OcultoPorFOV");
 
+        InitializeTargets();
         StartCoroutine(FindTargetsWithDelay(0.2f));
     }
+
+    void LateUpdate() 
+    {
+        DrawFieldOfView();
+    }
+
+    // ─── Inicialización ───────────────────────────────────────────────────────
+
+    void InitializeTargets()
+    {
+        Collider[] all = new Collider[200];
+        int found = Physics.OverlapSphereNonAlloc(transform.position, viewRadius * 10f, all, targetMask);
+        for (int i = 0; i < found; i++)
+        {
+            if (all[i] != null)
+                SetLayer(all[i].transform.gameObject, hiddenLayerIndex, hiddenLayerIndex);
+        }
+    }
+
+    // ─── Detección ────────────────────────────────────────────────────────────
 
     IEnumerator FindTargetsWithDelay(float delay) 
     {
@@ -61,22 +76,17 @@ public class FieldOfView : MonoBehaviour
         }
     }
 
-    void LateUpdate() 
-    {
-        DrawFieldOfView();
-    }
-
     void FindVisibleTargets() 
     {
         visibleTargets.Clear();
-        
+
         int targetsFound = Physics.OverlapSphereNonAlloc(transform.position, viewRadius, targetsInViewRadius, targetMask);
 
         for (int i = 0; i < targetsFound; i++) 
         {
             Transform target = targetsInViewRadius[i].transform;
             Vector3 dirToTarget = (target.position - transform.position).normalized;
-            
+
             if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2) 
             {
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
@@ -87,45 +97,59 @@ public class FieldOfView : MonoBehaviour
             }
         }
 
-        foreach (Transform prevTarget in previouslyVisibleTargets)
+        foreach (Transform prev in previouslyVisibleTargets)
         {
-            if (prevTarget != null && !visibleTargets.Contains(prevTarget))
-            {
-                SetLayerRecursively(prevTarget.gameObject, hiddenLayerIndex);
-            }
+            if (prev == null || visibleTargets.Contains(prev)) continue;
+
+            FOVTarget fovTarget = prev.GetComponent<FOVTarget>();
+            if (fovTarget != null && fovTarget.staysVisible) continue;
+
+            int visibleLayer = GetVisibleLayer(prev, fovTarget);
+            SetLayer(prev.gameObject, hiddenLayerIndex, visibleLayer);
         }
 
         foreach (Transform target in visibleTargets)
         {
-            if (!previouslyVisibleTargets.Contains(target))
-            {
-                SetLayerRecursively(target.gameObject, visibleLayerIndex);
-            }
+            FOVTarget fovTarget = target.GetComponent<FOVTarget>();
+            int visibleLayer = GetVisibleLayer(target, fovTarget);
+            SetLayer(target.gameObject, visibleLayer, visibleLayer);
         }
 
         previouslyVisibleTargets.Clear();
         previouslyVisibleTargets.AddRange(visibleTargets);
     }
-    private void SetLayerRecursively(GameObject obj, int newLayer)
+
+    // ─── Helpers de capas ─────────────────────────────────────────────────────
+
+    int GetVisibleLayer(Transform target, FOVTarget fovTarget)
+    {
+        if (fovTarget != null && fovTarget.VisibleLayer != -1)
+            return fovTarget.VisibleLayer;
+
+        return target.gameObject.layer != hiddenLayerIndex
+            ? target.gameObject.layer
+            : hiddenLayerIndex;
+    }
+
+    void SetLayer(GameObject obj, int toLayer, int fromLayer)
     {
         if (obj == null) return;
-        obj.layer = newLayer;
+
+        if (obj.layer == hiddenLayerIndex || obj.layer == fromLayer)
+            obj.layer = toLayer;
 
         foreach (Transform child in obj.transform)
-        {
-            if (child != null)
-            {
-                SetLayerRecursively(child.gameObject, newLayer);
-            }
-        }
+            SetLayer(child.gameObject, toLayer, fromLayer);
     }
+
+    // ─── Dibujo del mesh de visión ────────────────────────────────────────────
 
     void DrawFieldOfView() 
     {
         int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
         float stepAngleSize = viewAngle / stepCount;
-        
-        viewPoints.Clear(); 
+
+        viewPoints.Clear();
         ViewCastInfo oldViewCast = new ViewCastInfo();
 
         for (int i = 0; i <= stepCount; i++) 
@@ -149,17 +173,14 @@ public class FieldOfView : MonoBehaviour
         }
 
         int vertexCount = viewPoints.Count + 1;
-        
         vertices.Clear();
         triangles.Clear();
+        vertices.Add(Vector3.zero);
 
-        vertices.Add(Vector3.zero); 
-        
         for (int i = 0; i < vertexCount - 1; i++) 
         {
             Vector3 dir = (viewPoints[i] - transform.position).normalized;
-            Vector3 pushedPoint = viewPoints[i] + (dir * maskCutawayDst);
-            vertices.Add(transform.InverseTransformPoint(pushedPoint));
+            vertices.Add(transform.InverseTransformPoint(viewPoints[i] + dir * maskCutawayDst));
 
             if (i < vertexCount - 2) 
             {
@@ -208,24 +229,21 @@ public class FieldOfView : MonoBehaviour
         Vector3 dir = DirFromAngle(globalAngle, true);
         RaycastHit hit;
 
-        if (Physics.Raycast(transform.position, dir, out hit, viewRadius, obstacleMask)) 
-        {
+        if (Physics.Raycast(transform.position, dir, out hit, viewRadius, obstacleMask))
             return new ViewCastInfo(true, hit.point, hit.distance, globalAngle);
-        } 
-        else 
-        {
+        else
             return new ViewCastInfo(false, transform.position + dir * viewRadius, viewRadius, globalAngle);
-        }
     }
 
     public Vector3 DirFromAngle(float angleInDegrees, bool angleIsGlobal) 
     {
-        if (!angleIsGlobal) 
-        {
+        if (!angleIsGlobal)
             angleInDegrees += transform.eulerAngles.y;
-        }
+
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
+
+    // ─── Structs ──────────────────────────────────────────────────────────────
 
     public struct ViewCastInfo 
     {
@@ -236,10 +254,7 @@ public class FieldOfView : MonoBehaviour
 
         public ViewCastInfo(bool _hit, Vector3 _point, float _dst, float _angle) 
         {
-            hit = _hit;
-            point = _point;
-            dst = _dst;
-            angle = _angle;
+            hit = _hit; point = _point; dst = _dst; angle = _angle;
         }
     }
 
@@ -250,8 +265,7 @@ public class FieldOfView : MonoBehaviour
 
         public EdgeInfo(Vector3 _pointA, Vector3 _pointB) 
         {
-            pointA = _pointA;
-            pointB = _pointB;
+            pointA = _pointA; pointB = _pointB;
         }
     }
 }

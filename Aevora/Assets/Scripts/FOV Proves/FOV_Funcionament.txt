@@ -1,0 +1,22 @@
+Perque funcioni el FOV es necessari que el script
+ FieldOfView.cs estigui a un objecte "plane" fill del player
+ que estigui a la capa "MascaraFOV".
+
+Despres, el terra ha d'estar en la capa "Obstacle", al igual que les parets,
+ el que pasa es que les parets, per tal de que facin l'efecte que toca,
+ han d'estar duplicades y el seu duplicat a la capa "Default".
+
+Perque els objectes i enemics siguin invisibles al player fins que
+ no estan al FOV, han d'estar a la capa "OcultoPorFOV" i han
+ de tenir el script "FOV_Target", i al "Visible Layer Name" 
+ posar el nom de la capa que han d'estar quan siguin visibles.
+ També hi ha el camp "Stay Visible", que es deixa desmarcat a no ser
+ que es vulgui que aquell objecte, quan surti del FOV del player 
+ segueixi sent visible.
+
+A l'objecte que faci de FOV (el fill del player que esta 
+ a la capa "MascaraFOV), en el script "Field OF View", on posa 
+ "Target Mask" s'han de posar les capes "OcultoPorFOV" i les capes
+ d'aquells objectes que siguin no visibles (com els enemics). I on posa
+ "Obstacle Mask" son les capes d'aquells objectes com parets o terra que fan
+ d'obstacle.
