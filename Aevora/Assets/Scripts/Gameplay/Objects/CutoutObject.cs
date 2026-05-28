@@ -8,16 +8,23 @@ public class CutoutObject : MonoBehaviour
     [SerializeField] private Renderer targetRenderer;
 
     private Camera mainCamera;
-    private readonly HashSet<Renderer> activeRenderers = new HashSet<Renderer>();
 
-    private static readonly int CutoutPosId = Shader.PropertyToID("_CutoutPos");
-    private static readonly int CutoutSizeId = Shader.PropertyToID("_CutoutSize");
-    private static readonly int FalloffSizeId = Shader.PropertyToID("_FalloffSize");
+    private readonly HashSet<Renderer> activeRenderers = new HashSet<Renderer>();
+    private readonly HashSet<Renderer> nextRenderers   = new HashSet<Renderer>();
+
+    private static readonly RaycastHit[] HitBuffer = new RaycastHit[16];
+
+    private readonly Vector3[] samplePoints = new Vector3[3];
+
+    private static readonly int CutoutPosId    = Shader.PropertyToID("_CutoutPos");
+    private static readonly int CutoutSizeId   = Shader.PropertyToID("_CutoutSize");
+    private static readonly int FalloffSizeId  = Shader.PropertyToID("_FalloffSize");
 
     private void Awake()
     {
         mainCamera = Camera.main;
     }
+
     private void Start()
     {
         ClearCutout();
@@ -32,90 +39,91 @@ public class CutoutObject : MonoBehaviour
             ? targetRenderer.bounds
             : new Bounds(targetObject.position, Vector3.one);
 
+        Vector3 center  = bounds.center;
+        float   extentY = bounds.extents.y;
+
+        samplePoints[0] = center;
+        samplePoints[1] = center + new Vector3(0f,  extentY, 0f);
+        samplePoints[2] = center + new Vector3(0f, -extentY, 0f);
+
         Vector3 cameraPos = mainCamera.transform.position;
 
-        Vector3[] samplePoints =
-        {
-            bounds.center,
-            bounds.center + Vector3.up * bounds.extents.y,
-            bounds.center - Vector3.up * bounds.extents.y
-        };
+        nextRenderers.Clear();
 
-        bool isBlocked = false;
         foreach (Vector3 point in samplePoints)
         {
-            Vector3 direction = point - cameraPos;
-            if (Physics.Raycast(cameraPos, direction.normalized, direction.magnitude, wallMask))
+            Vector3 dir      = point - cameraPos;
+            float   distance = dir.magnitude;
+
+            int hitCount = Physics.RaycastNonAlloc(
+                cameraPos,
+                dir / distance,   
+                HitBuffer,
+                distance,
+                wallMask,
+                QueryTriggerInteraction.Ignore
+            );
+
+            for (int i = 0; i < hitCount; i++)
             {
-                isBlocked = true;
-                break;
+                Renderer r = HitBuffer[i].collider.GetComponent<Renderer>();
+                if (r != null) nextRenderers.Add(r);
             }
         }
 
-        if (!isBlocked)
+        if (nextRenderers.Count == 0)
         {
             ClearCutout();
             return;
         }
 
-        Vector2 cutoutPos = mainCamera.WorldToViewportPoint(targetObject.position);
-
-        RaycastHit[] hitObjects = Physics.RaycastAll(
-            cameraPos,
-            (targetObject.position - cameraPos).normalized,
-            Vector3.Distance(cameraPos, targetObject.position),
-            wallMask
-        );
-
-        // Primero limpia los renderers que ya no están bloqueando
-        HashSet<Renderer> newRenderers = new HashSet<Renderer>();
-        for (int i = 0; i < hitObjects.Length; i++)
-        {
-            Renderer r = hitObjects[i].collider.GetComponent<Renderer>();
-            if (r != null) newRenderers.Add(r);
-        }
-
-        // Apaga cutout en renderers que salieron del rayo
         foreach (Renderer r in activeRenderers)
         {
-            if (r == null || newRenderers.Contains(r)) continue;
-            foreach (Material m in r.materials)
+            if (r == null || nextRenderers.Contains(r)) continue;
+
+            Material[] mats = r.materials;
+            for (int i = 0; i < mats.Length; i++)
             {
-                m.SetFloat(CutoutSizeId, 0f);
-                m.SetFloat(FalloffSizeId, 0f);
+                mats[i].SetFloat(CutoutSizeId,  0f);
+                mats[i].SetFloat(FalloffSizeId, 0f);
+            }
+        }
+
+        Vector2 cutoutPos = mainCamera.WorldToViewportPoint(targetObject.position);
+
+        foreach (Renderer r in nextRenderers)
+        {
+            bool isNew = !activeRenderers.Contains(r);
+
+            Material[] mats = r.materials;
+            for (int i = 0; i < mats.Length; i++)
+            {
+                if (isNew)
+                    mats[i].SetVector(CutoutPosId, cutoutPos);
+
+                mats[i].SetFloat(CutoutSizeId,  0.1f);
+                mats[i].SetFloat(FalloffSizeId, 0.0f);
             }
         }
 
         activeRenderers.Clear();
-
-        // Aplica cutout solo a los nuevos
-        foreach (Renderer r in newRenderers)
-        {
-            if (!activeRenderers.Add(r)) continue;
-            foreach (Material m in r.materials)
-            {
-                m.SetVector(CutoutPosId, cutoutPos);
-                m.SetFloat(CutoutSizeId, 0.1f);
-                m.SetFloat(FalloffSizeId, 0.0f);
-            }
-        }
+        foreach (Renderer r in nextRenderers)
+            activeRenderers.Add(r);
     }
 
     private void ClearCutout()
     {
-        foreach (Renderer renderer in activeRenderers)
+        foreach (Renderer r in activeRenderers)
         {
-            if (renderer == null)
-                continue;
+            if (r == null) continue;
 
-            Material[] materials = renderer.materials;
-            for (int i = 0; i < materials.Length; i++)
+            Material[] mats = r.materials;
+            for (int i = 0; i < mats.Length; i++)
             {
-                materials[i].SetFloat(CutoutSizeId, 0f);
-                materials[i].SetFloat(FalloffSizeId, 0f);
+                mats[i].SetFloat(CutoutSizeId,  0f);
+                mats[i].SetFloat(FalloffSizeId, 0f);
             }
         }
-
         activeRenderers.Clear();
     }
 }

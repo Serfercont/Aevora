@@ -57,7 +57,7 @@ Material:
     m_Floats:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
-    - _CutoutSize: 0.1
+    - _CutoutSize: 0
     - _FalloffSize: 0
     - _QueueControl: 0
     - _QueueOffset: 0

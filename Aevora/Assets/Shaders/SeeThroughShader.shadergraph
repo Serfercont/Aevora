@@ -758,7 +758,7 @@
     "m_Hidden": false,
     "m_PerRendererData": false,
     "m_customAttributes": [],
-    "m_Value": 0.10000000149011612,
+    "m_Value": 0.0,
     "m_FloatType": 0,
     "m_LiteralFloatMode": false,
     "m_RangeValues": {
@@ -1361,8 +1361,8 @@
     "m_ObjectId": "2e1a0480b515496693e0020353ef1505",
     "m_Title": "Get Cutout Position",
     "m_Position": {
-        "x": -3078.400146484375,
-        "y": 469.6002197265625
+        "x": -3078.400390625,
+        "y": 469.60009765625
     }
 }
 
@@ -2092,7 +2092,7 @@
     "m_Title": "Base Color",
     "m_Position": {
         "x": -877.5999755859375,
-        "y": -205.60000610351563
+        "y": -205.5999755859375
     }
 }
 
@@ -2359,8 +2359,8 @@
     "m_ObjectId": "82df6884e4b64b5798a4723e9e8b22d3",
     "m_Title": "Aspect Ratio",
     "m_Position": {
-        "x": -3521.60009765625,
-        "y": 619.199951171875
+        "x": -3521.600341796875,
+        "y": 619.2000122070313
     }
 }
 
@@ -3404,7 +3404,7 @@
     "m_Title": "Calculate cutout with Dithering",
     "m_Position": {
         "x": -1690.4000244140625,
-        "y": 327.2000732421875
+        "y": 327.2000427246094
     }
 }
 
@@ -3649,8 +3649,8 @@
     "m_ObjectId": "ed35e6dc4f1f47d2b1761c5a45c9bcf4",
     "m_Title": "Get Screen Position",
     "m_Position": {
-        "x": -3253.60009765625,
-        "y": -124.0
+        "x": -3253.600341796875,
+        "y": -123.99996948242188
     }
 }
 
@@ -3846,7 +3846,7 @@
     "m_Title": "Get Distance",
     "m_Position": {
         "x": -2136.000244140625,
-        "y": 445.60009765625
+        "y": 445.6000671386719
     }
 }
 

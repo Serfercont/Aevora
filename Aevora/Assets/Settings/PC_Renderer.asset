@@ -34,7 +34,7 @@ MonoBehaviour:
       overrideStencilState: 1
       stencilReference: 1
       stencilCompareFunction: 3
-      passOperation: 0
+      passOperation: 1
       failOperation: 0
       zFailOperation: 0
     cameraSettings:
@@ -81,7 +81,7 @@ MonoBehaviour:
       zFailOperation: 0
     cameraSettings:
       overrideCamera: 0
-      restoreCamera: 1
+      restoreCamera: 0
       offset: {x: 0, y: 0, z: 0, w: 0}
       cameraFieldOfView: 60
 --- !u!114 &11400000
@@ -128,7 +128,7 @@ MonoBehaviour:
     m_Bits: 3447
   m_DefaultStencilState:
     overrideStencilState: 0
-    stencilReference: 1
+    stencilReference: 0
     stencilCompareFunction: 3
     passOperation: 2
     failOperation: 0
