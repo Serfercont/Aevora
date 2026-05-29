@@ -41,7 +41,7 @@ public class Enemy : MonoBehaviour
         {
             if(animator != null)
             {
-                bool isWalking = navMeshAgent.velocity.magnitude > 0.1f;
+                bool isWalking = navMeshAgent.velocity.magnitude > 0.05f || (!navMeshAgent.isStopped && navMeshAgent.hasPath);
                 animator.SetBool("is_walking", isWalking);
             }
         }
@@ -77,6 +77,9 @@ public class Enemy : MonoBehaviour
     public void DetectAndFire(GameObject player)
     {
         if(isAttacking) return;
+
+        StopAllCoroutines();
+        isWaiting = false;
         StartCoroutine(AttackAndRespawnPlayer(player));
     }
 
@@ -109,8 +112,8 @@ public class Enemy : MonoBehaviour
             yield return null;
         }
 
-        Player playerScript = player.GetComponent<Player>();
-        Rigidbody playerRb = player.GetComponent<Rigidbody>();
+        Player playerScript = player?.GetComponent<Player>();
+        Rigidbody playerRb = player?.GetComponent<Rigidbody>();
 
         if (playerRb != null && playerScript != null)
         {
@@ -125,10 +128,11 @@ public class Enemy : MonoBehaviour
         animator.SetTrigger("playerdead");
         yield return new WaitForSeconds(1f);
 
-        animator.ResetTrigger("playerdead");
+        
 
         if (animator != null)
         {
+            animator.ResetTrigger("playerdead");
             animator.transform.localPosition = initialModelLocalPos;
             animator.transform.localRotation = initialModelLocalRot;
         }

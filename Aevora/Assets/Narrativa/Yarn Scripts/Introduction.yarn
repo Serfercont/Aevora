@@ -51,6 +51,8 @@ Zeke: Pero escúchame bien, muchacho. Abajo la cosa está peor. Tanner estaba ma
 
 title: GuardiasHablando
 ---
+<<toggle_move Player false>>
+
 Guardia 1: ¿Has escuchado todo ese alboroto que viene de fuera?  
 
 Guardia 2: Sí, seguramente sea una trifulca de los Obreros del Vapor. No me pagan suficientes Créditos de Producción para preocuparme por lo que pasa en la calle. 
@@ -62,4 +64,6 @@ Guardia 2: Que lo busque él si tantas ganas tiene. Mucho ladrar, pero seguro qu
 Guardia 1: Calla, a ver si va a aparecer por el pasillo. Solo nos falta que nos acuse de traición o nos quite las raciones.  
 
 Guardia 2: Suspiro... Pues no nos queda más que seguir vigilando.
+
+<<toggle_move Player true>>
 ===
