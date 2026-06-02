@@ -1,0 +1,86 @@
+﻿title: GuardiasHablando3
+---
+<<if not $vistoGuardias3>>
+    
+    <<toggle_move Player false>>
+
+    Guardia 1:
+        Te lo digo, desde que bajamos a hacer las rondas al sótano siento un escalofrío en la nuca. Alguien nos está vigilando. 
+    Guardia 2:
+        ¿Te refieres al prisionero que escapó de los interrogatorios? Graves dice que sigue escondido en el edificio. 
+    Guardia 1:
+        No... es otra cosa; una de las Sombras de Lovelace. Dicen que esos tipos ni siquiera respiran como gente normal, se funden con el vapor de las tuberías. Podría ser cualquiera, hasta el relevo del turno de noche.
+    Guardia 2:
+        Deja de decir estupideces o empezaré a sospechar de ti. Mantén los ojos en los pasillos y el dedo en el gatillo.
+
+    <<toggle_move Player true>>
+    <<set $vistoGuardias3 = true>>
+
+<<else>>
+
+<<endif>>
+===
+
+title: GuardiasHablando4
+---
+<<if not $vistoGuardias4>>
+
+    <<toggle_move Player false>>
+
+    Guardia 1:
+        ¿Tú entiendes por qué nos tienen patrullando los bloques de celdas de estos muertos de hambre, si lo que les importa de verdad está en la cámara acorazada? 
+    Guardia 2:
+        Porque Graves es un cobarde que quiere cubrirse las espaldas con el Comandante Vickers. Pero si yo estuviera al mando, habría puesto a cuatro hombres apostados directamente en la sala de calderas auxiliares.  
+    Guardia 1:
+        ¿En las calderas? ¿Por qué allí? 
+    Guardia 2:
+        Porque los conductos de ventilación de esa sala conectan directamente con el archivo donde tienen los documentos blindados. Si alguien no tiene la llave principal, es lo bastante ágil y está desesperado... podría colarse por ahí.
+
+    <<toggle_move Player true>>
+    <<set $vistoGuardias4=true>>
+<<else>>
+
+<<endif>>
+===
+
+title: ConversacionRichieTommy
+---
+<<if not $vistoRichieTommy>>
+    <<toggle_move Player false>>
+
+    Richie: ¡Tommy! ¿Estás bien? Aguanta, voy a sacaros de aquí.
+    Thomas:	Fletcher... Maldita sea, sabía que serías lo bastante terco como para venir. Pero llegas tarde, chico.
+    Richie: No me digas eso. Me crucé con Zeke arriba. Me dio una de las llaves del sótano y me dijo que estarías aquí. Dime cómo abro esto.  
+    Thomas: Zeke... pobre bastardo. Escúchame, la llave de esta celda la tiene Graves o uno de sus oficiales de élite. Pero eso no es lo peor. El Ojo Imperial ya está aquí, Fletcher. Puedo oler el vapor de sus respiradores. Vienen a por los documentos de los Vickers. 
+
+        -> Richie: Primero te saco a ti y a los demás. Luego nos preocupamos de los malditos documentos. No voy a dejaros aquí para que las Sombras de Lovelace os ejecuten.
+        -> Richie: Si el Ojo Imperial pone las manos en esos papeles, la oportunidad de provocar una guerra entre los Vickers y los Armstrong desaparece. Dime exactamente dónde los tienen.
+
+    Thomas: Están en la cámara acorazada, al final del bloque de detención. Según escuché a los guardias, se puede entrar por el sistema de ventilación de la sala de calderas. Pero escúchame bien... Estoy perdiendo mucha sangre y apenas siento las piernas. Si me sacas de esta celda tal y como estoy, seré un peso muerto. Nos atraparán a todos.
+
+    <<if $ayudoAZeke==true>>
+        Richie: Tommy... lo siento. Me crucé con Zeke arriba. Estaba destrozado por la tortura. Tuve que darle mi botiquín para que no se desangrara allí mismo.
+
+        Thomas: *Cierra los ojos un segundo, asimilando la noticia y el dolor…* Hiciste bien, Zeke habría hecho lo mismo por ti, por cualquiera de nosotros. No te preocupes por mí ahora. Ve a por esos documentos antes de que el Imperio gane un día más.
+
+    <<endif>>
+    <<if has_item("botiquin", 1)>>
+        Richie: No vas a ser un peso muerto. Toma esto, es un botiquín militar de la primera planta. Úsalo, detén la hemorragia y prepárate para correr en cuanto consiga abrir esta puerta.
+            <<use_item Player "botiquin" 1>>
+            <<set $ayudoATommy = true>>
+        Thomas: *Esboza una sonrisa cansada mientras coge el botiquín*. Siempre fuiste un obrero con demasiados recursos, Richie. Date prisa. Te cubriremos las espaldas en cuanto salgamos de esta jaula.
+
+    <<else>>
+        Richie: Lo siento, Tommy. No me quedan suministros médicos y los guardias de arriba están fuertemente armados. Tendrás que aguantar el dolor un poco más.
+        Thomas: Aprieta los dientes y asiente débilmente, pálido. Haz tu trabajo, Fletcher. Que mi sufrimiento y el de Zeke valgan la pena para la causa.
+
+    <<endif>>
+    <<set $vistoRichieTommy=true>>
+    <<toggle_move Player true>>
+
+<<else>>
+    <<toggle_move Player false>>
+    Thomas: No te entretengas, debes ir a por los documentos.
+    <<toggle_move Player true>>
+<<endif>>
+===

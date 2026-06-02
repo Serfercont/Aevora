@@ -1,0 +1,81 @@
+﻿title: ZekeEncuentro
+---
+<<if not $vistoZekeEncuentro>>
+    <<toggle_move Player false>>
+
+    Richie: ...Eh. Tranquilo.
+    Zeke: *Se tensa, intentando incorporarse* ¡No te acerques!
+    Richie: Si quisiera entregarte, no estaría hablando contigo.
+    Zeke: Eso diría cualquiera de ellos.
+    Richie: Mírame. ¿Acaso llevo su uniforme?
+    Zeke: No. Pero eso no significa nada.
+    Richie: Vale. Entonces sigamos así, tú no confías en mí... y yo seguiré sin las respuestas que necesito.
+    Zeke: Pues busca en otro sitio.
+    Richie: No puedo. Te he encontrado a ti, y para mi suerte tú eres la mejor opción ahora.
+    Zeke: Tose, llevándose una mano al costado manchado de sangre oscura. Eres de las fábricas... Tienes las manos llenas de grasa. ¿Quién te envía?
+    Richie: Me llamo Fletcher. Vengo por mis compañeros, por Tanner.
+
+    -> Richie: Arriba dicen que te escapaste de los interrogatorios . La base entera te está buscando. Si no me dices dónde están los demás, estamos muertos.
+        Zeke: Están abajo, encerrados en el sótano.
+    -> Richie: Sé que te han hecho daño, pero necesito saber qué ha pasado. ¿Tanner sigue vivo?
+        Zeke: No lo sé... Me pareció oirle gritar antes.
+
+    Zeke: *Zeke aparta la mirada, avergonzado*. 
+    Zeke: Me escapé antes de que me bajaran de nuevo... pero me hicieron hablar. Les dije cosas, Fletcher, cosas que no debía...
+    Richie: Ya nos preocuparemos de eso luego. ¿Cómo llego hasta ellos?
+    Zeke: Las puertas principales están selladas. Pero le quité esto a uno de los guardias cuando huí. Zeke le tiende una llave metálica pesada. 
+    Es tuya. Pero ten cuidado, la cerradura del sótano es doble. Necesitarás encontrar otra llave en esta planta para poder bajar.
+
+    // Acción
+    <<add_item Player "ganzua" 1>>
+
+    Richie: *Richie guarda la llave y se fija en la herida del costado de Zeke, que no deja de sangrar.*
+    Richie: Apenas puedes tenerte en pie, estás perdiendo demasiada sangre."
+    Zeke: Puedo... puedo aguantar. Si tuvieras un botiquín... podría estabilizarme. 
+    Zeke: Pero escúchame bien, muchacho. Abajo la cosa está peor. Tanner estaba malherido la última vez que lo vi, podrías necesitar ese botiquín más adelante.
+
+    <<if has_item("botiquin", 1)>>
+        -> Richie: (Darle el botiquín) No voy a dejarte morir desangrado en esta habitación. Toma, úsalo.
+            <<use_item Player "botiquin" 1>>
+            <<set $ayudoAZeke = true>>
+            Zeke: *Toma el botiquín con manos temblorosas*. Eres un buen chico, Fletcher. Me apañaré con esto, buscaré una salida en cuanto recupere el aliento. Suerte ahí abajo; la vas a necesitar.
+        -> Richie: Tienes razón. No sabemos qué me voy a encontrar en el sótano. Lo siento, Zeke.
+            <<set $muereZeke= true>>
+            Zeke: *Asiente lentamente*, apoyando la cabeza contra la pared. Es... es lo más inteligente. Haz que valga la pena, Fletcher, saca a Tanner y al resto de aquí. No dejes que el Imperio gane hoy.
+    <<else>>
+            Richie: No tengo nada para ayudarte ahora...
+            Zeke: *Asiente lentamente*, apoyando la cabeza contra la pared. Es... es lo más inteligente. Haz que valga la pena, Fletcher, saca a Tanner y al resto de aquí. No dejes que el Imperio gane hoy.
+    <<endif>>
+
+    <<set $vistoZekeEncuentro=true>>
+    <<toggle_move Player true>>
+
+<<else>>
+
+    <<toggle_move Player false>>
+    Zeke: Date prisa, Fletcher... No dejes que el Imperio gane hoy.
+    <<toggle_move Player true>>
+
+<<endif>>
+===
+
+title: GuardiasHablando2
+---
+<<if not $vistoGuardias2>>
+    
+    <<toggle_move Player false>>
+
+    Guardia 1: ¿Te has enterado de lo que han traído?
+    Guardia 2: Solo que nadie puede tocarlo. Órdenes directas.
+    Guardia 1: Siempre dicen lo mismo cuando algo es importante.
+    Guardia 2: Está en la sala del ala este. Con doble cerradura.
+    Guardia 1: Genial. Más trabajo para nosotros si alguien mete la pata.
+    Guardia 2: Con Graves encima, mejor no ser ese alguien.
+
+    <<set $vistoGuardias2 = true>>
+    <<toggle_move Player true>>
+
+<<else>>
+
+<<endif>>
+===
