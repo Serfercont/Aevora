@@ -4,6 +4,8 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    public enum EnemyType { Patrol, StationaryRotator }
+    [SerializeField] private EnemyType enemyType = EnemyType.Patrol;
     private NavMeshAgent navMeshAgent;
     private Animator animator;
 
@@ -11,8 +13,16 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float waitTime = 3f;
     private int currentWaypointIndex = 0;
 
+    [SerializeField] private float rotationSpeed = 90f;
+    [SerializeField] private float minTurnTime = 1f;
+    [SerializeField] private float maxTurnTime = 3f;
+    [SerializeField] private float minWaitTime = 2f;
+    [SerializeField] private float maxWaitTime = 5f;
+
     private bool isWaiting= false;
     private bool isAttacking = false;
+    private bool isRotating = false;
+    private float currentTurnDirection = 1f;
 
     private Vector3 initialModelLocalPos;
     private Quaternion initialModelLocalRot;
@@ -23,9 +33,20 @@ public class Enemy : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
         initialModelLocalPos = animator.transform.localPosition;
         initialModelLocalRot = animator.transform.localRotation;
-        if(waypoints.Length > 0)
+        if(enemyType == EnemyType.Patrol)
         {
-            MoveToNextWaypoint();
+            if(waypoints.Length > 0)
+            {
+                MoveToNextWaypoint();
+            }
+        }
+        else if(enemyType == EnemyType.StationaryRotator)
+        {
+            if(navMeshAgent != null)
+            {
+                navMeshAgent.enabled = false;
+            }
+            StartCoroutine(RotateAndWait());
         }
     }
 
@@ -33,9 +54,24 @@ public class Enemy : MonoBehaviour
     {
         if (isAttacking || isWaiting) return;
 
-        if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance + 0.1f)
+        if(enemyType == EnemyType.Patrol)
         {
-            StartCoroutine(WaitAtWaypoint());
+            HandlePatrolLogic();
+        }
+        else if(enemyType == EnemyType.StationaryRotator && isRotating)
+    {
+        transform.Rotate(Vector3.up, rotationSpeed * currentTurnDirection * Time.deltaTime);
+    }
+    }
+
+    private void HandlePatrolLogic()
+    {
+        if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance && !navMeshAgent.pathPending)
+        {
+            if (!isWaiting)
+            {
+                StartCoroutine(WaitAtWaypoint());
+            }
         }
         else
         {
@@ -47,6 +83,33 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private IEnumerator RotateAndWait()
+    {
+        while (true)
+        {
+            isRotating = false;
+            if (animator != null)
+            {
+                animator.SetBool("is_walking", false);
+                animator.SetBool("issearching", true);
+            }
+
+            float waitDuration = Random.Range(minWaitTime, maxWaitTime);
+            yield return new WaitForSeconds(waitDuration);
+
+            if (animator != null)
+            {
+                animator.SetBool("issearching", false);
+                animator.SetBool("is_walking", true);
+            }
+
+            currentTurnDirection = Random.Range(0, 2) == 0 ? 1f : -1f;
+            float rotationDuration = Random.Range(minTurnTime, maxTurnTime);
+            
+            isRotating = true;
+            yield return new WaitForSeconds(rotationDuration);
+        }
+    }
     private void MoveToNextWaypoint()
     {
         if (waypoints.Length == 0) return;
@@ -80,6 +143,7 @@ public class Enemy : MonoBehaviour
 
         StopAllCoroutines();
         isWaiting = false;
+        isRotating = false;
         StartCoroutine(AttackAndRespawnPlayer(player));
     }
 
@@ -87,8 +151,11 @@ public class Enemy : MonoBehaviour
     {
         isAttacking = true;
 
-        navMeshAgent.isStopped = true;
-        navMeshAgent.velocity = Vector3.zero;
+        if (navMeshAgent != null && navMeshAgent.enabled)
+        {
+            navMeshAgent.isStopped = true;
+            navMeshAgent.velocity = Vector3.zero;
+        }
 
         animator.SetBool("is_walking", false);
         animator.SetBool("issearching", false);
@@ -142,7 +209,14 @@ public class Enemy : MonoBehaviour
 
         isAttacking = false;
 
-        navMeshAgent.isStopped = false;
-        MoveToNextWaypoint();
+        if (enemyType == EnemyType.Patrol)
+        {
+            if (navMeshAgent != null && navMeshAgent.enabled) navMeshAgent.isStopped = false;
+            MoveToNextWaypoint();
+        }
+        else if (enemyType == EnemyType.StationaryRotator)
+        {
+            StartCoroutine(RotateAndWait());
+        }
     }
 }
