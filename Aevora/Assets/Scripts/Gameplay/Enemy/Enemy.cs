@@ -27,12 +27,23 @@ public class Enemy : MonoBehaviour
     private Vector3 initialModelLocalPos;
     private Quaternion initialModelLocalRot;
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioSource shootAudioSource;
+    [SerializeField] private AudioClip shootClip;  
+
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
         initialModelLocalPos = animator.transform.localPosition;
         initialModelLocalRot = animator.transform.localRotation;
+        
+        if (shootAudioSource != null && shootClip != null)
+        {
+            shootAudioSource.clip = shootClip;
+            shootAudioSource.loop = true;
+        }
+
         if(enemyType == EnemyType.Patrol)
         {
             if(waypoints.Length > 0)
@@ -59,9 +70,9 @@ public class Enemy : MonoBehaviour
             HandlePatrolLogic();
         }
         else if(enemyType == EnemyType.StationaryRotator && isRotating)
-    {
-        transform.Rotate(Vector3.up, rotationSpeed * currentTurnDirection * Time.deltaTime);
-    }
+        {
+            transform.Rotate(Vector3.up, rotationSpeed * currentTurnDirection * Time.deltaTime);
+        }
     }
 
     private void HandlePatrolLogic()
@@ -110,6 +121,7 @@ public class Enemy : MonoBehaviour
             yield return new WaitForSeconds(rotationDuration);
         }
     }
+
     private void MoveToNextWaypoint()
     {
         if (waypoints.Length == 0) return;
@@ -161,6 +173,11 @@ public class Enemy : MonoBehaviour
         animator.SetBool("issearching", false);
         animator.SetTrigger("playerfound");
 
+        if (shootAudioSource != null && !shootAudioSource.isPlaying)
+        {
+            shootAudioSource.Play();
+        }
+
         float timer = 0f;
         while (timer < 2f)
         {
@@ -179,6 +196,11 @@ public class Enemy : MonoBehaviour
             yield return null;
         }
 
+        if (shootAudioSource != null)
+        {
+            shootAudioSource.Stop();
+        }
+
         Player playerScript = player?.GetComponent<Player>();
         Rigidbody playerRb = player?.GetComponent<Rigidbody>();
 
@@ -190,12 +212,8 @@ public class Enemy : MonoBehaviour
         }
 
         animator.ResetTrigger("playerfound");
-        
-
         animator.SetTrigger("playerdead");
         yield return new WaitForSeconds(1f);
-
-        
 
         if (animator != null)
         {
@@ -205,7 +223,6 @@ public class Enemy : MonoBehaviour
         }
 
         transform.eulerAngles = new Vector3(0, transform.eulerAngles.y, 0);
-
 
         isAttacking = false;
 
