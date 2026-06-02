@@ -885,12 +885,12 @@
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
     "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
+    "overrideHLSLDeclaration": true,
+    "hlslDeclarationOverride": 2,
     "m_Hidden": false,
     "m_PerRendererData": false,
     "m_customAttributes": [],
-    "m_Value": 0.0,
+    "m_Value": 0.10000000149011612,
     "m_FloatType": 0,
     "m_LiteralFloatMode": false,
     "m_RangeValues": {
@@ -1248,8 +1248,8 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2472.0,
-            "y": 530.0,
+            "x": -2471.999755859375,
+            "y": 528.9999389648438,
             "width": 128.0,
             "height": 101.0
         }
@@ -1475,8 +1475,8 @@
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
     "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
+    "overrideHLSLDeclaration": true,
+    "hlslDeclarationOverride": 2,
     "m_Hidden": false,
     "m_PerRendererData": false,
     "m_customAttributes": [],
@@ -1577,7 +1577,7 @@
     "m_Title": "Get Cutout Position",
     "m_Position": {
         "x": -3078.0,
-        "y": 471.00006103515627
+        "y": 470.0
     }
 }
 
@@ -2002,8 +2002,8 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2866.0,
-            "y": 539.0,
+            "x": -2865.999755859375,
+            "y": 539.9999389648438,
             "width": 119.0,
             "height": 149.0
         }
@@ -2561,8 +2561,8 @@
     "m_ObjectId": "6e96f4976230400aac4e6703720f2d75",
     "m_Title": "Base Color",
     "m_Position": {
-        "x": -877.0000610351563,
-        "y": -203.99990844726563
+        "x": -877.0,
+        "y": -203.0
     }
 }
 
@@ -2618,9 +2618,9 @@
         "m_Position": {
             "serializedVersion": "2",
             "x": -1665.0001220703125,
-            "y": 417.0000305175781,
-            "width": 136.0,
-            "height": 33.999969482421878
+            "y": 417.0,
+            "width": 126.0,
+            "height": 34.000030517578128
         }
     },
     "m_Slots": [
@@ -2762,10 +2762,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -611.0000610351563,
-            "y": -144.9999542236328,
-            "width": 207.99996948242188,
-            "height": 432.99993896484377
+            "x": -610.9999389648438,
+            "y": -144.00001525878907,
+            "width": 208.0,
+            "height": 433.0
         }
     },
     "m_Slots": [
@@ -2830,7 +2830,7 @@
     "m_Title": "Aspect Ratio",
     "m_Position": {
         "x": -3521.0,
-        "y": 621.0001220703125
+        "y": 621.0
     }
 }
 
@@ -4077,8 +4077,8 @@
     "m_ObjectId": "cd9423dc11a342c799dd28de0d943d2a",
     "m_Title": "Calculate cutout with Dithering",
     "m_Position": {
-        "x": -1690.0001220703125,
-        "y": 329.0000915527344
+        "x": -1690.0,
+        "y": 329.0
     }
 }
 
@@ -4137,10 +4137,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -140.0,
-            "y": 574.0,
-            "width": 0.0,
-            "height": 0.0
+            "x": -140.99998474121095,
+            "y": 523.9999389648438,
+            "width": 125.0,
+            "height": 34.0
         }
     },
     "m_Slots": [
@@ -4376,7 +4376,7 @@
     "m_Title": "Get Screen Position",
     "m_Position": {
         "x": -3253.0,
-        "y": -121.9999008178711
+        "y": -122.0
     }
 }
 
@@ -4572,7 +4572,7 @@
     "m_Title": "Get Distance",
     "m_Position": {
         "x": -2136.0,
-        "y": 447.0001525878906
+        "y": 447.0
     }
 }
 

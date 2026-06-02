@@ -12,7 +12,8 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHATEST_ON
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -42,14 +43,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _AlphaClip: 0.5
+    - _AlphaToMask: 0.1
     - _AmbientOcclusion: 1
     - _Cutoff: 0
     - _CutoutSize: 0
     - _FalloffSize: 0.01
-    - _Metallic: 0
+    - _Metallic: 0.226
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Smoothness: 0.265
+    - _Smoothness: 0
     m_Colors:
     - _BaseColor: {r: 0.29411766, g: 0.21568628, b: 0.20392157, a: 1}
     - _Color: {r: 0.31132078, g: 0.27167144, b: 0.28002894, a: 1}
