@@ -4,14 +4,13 @@
     
     <<toggle_move Player false>>
 
-    Guardia 1:
-        Te lo digo, desde que bajamos a hacer las rondas al sótano siento un escalofrío en la nuca. Alguien nos está vigilando. 
-    Guardia 2:
-        ¿Te refieres al prisionero que escapó de los interrogatorios? Graves dice que sigue escondido en el edificio. 
-    Guardia 1:
-        No... es otra cosa; una de las Sombras de Lovelace. Dicen que esos tipos ni siquiera respiran como gente normal, se funden con el vapor de las tuberías. Podría ser cualquiera, hasta el relevo del turno de noche.
-    Guardia 2:
-        Deja de decir estupideces o empezaré a sospechar de ti. Mantén los ojos en los pasillos y el dedo en el gatillo.
+    Guardia 1: Te lo digo, desde que bajamos a hacer las rondas al sótano siento un escalofrío en la nuca. Alguien nos está vigilando. 
+
+    Guardia 2:¿Te refieres al prisionero que escapó de los interrogatorios? Graves dice que sigue escondido en el edificio. 
+
+    Guardia 1: No... es otra cosa; una de las Sombras de Lovelace. Dicen que esos tipos ni siquiera respiran como gente normal, se funden con el vapor de las tuberías. Podría ser cualquiera, hasta el relevo del turno de noche.
+
+    Guardia 2: Deja de decir estupideces o empezaré a sospechar de ti. Mantén los ojos en los pasillos y el dedo en el gatillo.
 
     <<toggle_move Player true>>
     <<set $vistoGuardias3 = true>>
@@ -27,14 +26,13 @@ title: GuardiasHablando4
 
     <<toggle_move Player false>>
 
-    Guardia 1:
-        ¿Tú entiendes por qué nos tienen patrullando los bloques de celdas de estos muertos de hambre, si lo que les importa de verdad está en la cámara acorazada? 
-    Guardia 2:
-        Porque Graves es un cobarde que quiere cubrirse las espaldas con el Comandante Vickers. Pero si yo estuviera al mando, habría puesto a cuatro hombres apostados directamente en la sala de calderas auxiliares.  
-    Guardia 1:
-        ¿En las calderas? ¿Por qué allí? 
-    Guardia 2:
-        Porque los conductos de ventilación de esa sala conectan directamente con el archivo donde tienen los documentos blindados. Si alguien no tiene la llave principal, es lo bastante ágil y está desesperado... podría colarse por ahí.
+    Guardia 1: ¿Tú entiendes por qué nos tienen patrullando los bloques de celdas de estos muertos de hambre, si lo que les importa de verdad está en la cámara acorazada? 
+
+    Guardia 2: Porque Graves es un cobarde que quiere cubrirse las espaldas con el Comandante Vickers. Pero si yo estuviera al mando, habría puesto a cuatro hombres apostados directamente en la sala de calderas auxiliares.  
+
+    Guardia 1: ¿En las calderas? ¿Por qué allí? 
+    
+    Guardia 2: Porque los conductos de ventilación de esa sala conectan directamente con el archivo donde tienen los documentos blindados. Si alguien no tiene la llave principal, es lo bastante ágil y está desesperado... podría colarse por ahí.
 
     <<toggle_move Player true>>
     <<set $vistoGuardias4=true>>
