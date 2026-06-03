@@ -5,10 +5,13 @@ public class Door : MonoBehaviour, IInteractable
 {
     [Header("Identificador")]
     [Tooltip("Debe coincidir con el keyID de la llave correspondiente.")]
-    [SerializeField] private string doorKeyID = "key_door_1";
+    [SerializeField] private string KeyID = "key_door_1";
+    [Tooltip("ID de la segunda llave si la puerta necesita dos. Si se deja vacío, se usa KeyID + \"_second\".")]
+    [SerializeField] private string secondKeyID = "";
 
     [Header("Prompts")]
     [SerializeField] private string promptLocked   = "Necesitas una llave";
+    [SerializeField] private string promptLockedTwoKeys = "Necesitas dos llaves";
     [SerializeField] private string promptUnlocked = "Abrir puerta";
 
     [Header("Animación (opcional)")]
@@ -18,32 +21,56 @@ public class Door : MonoBehaviour, IInteractable
     [Header("Comportamiento")]
     [Tooltip("Si está marcado, la puerta se desactiva al abrirse en vez de animarse.")]
     [SerializeField] private bool disableOnOpen = false;
+    [SerializeField] private bool needs2Keys = false;
 
     private bool _isOpen = false;
 
     public string GetInteractionPrompt()
     {
         if (_isOpen) return "";
-        return PlayerInventory.HasKey(doorKeyID) ? promptUnlocked : promptLocked;
+
+        if (needs2Keys)
+        {
+            return HasRequiredKeys() ? promptUnlocked : promptLockedTwoKeys;
+        }
+
+        return PlayerInventory.HasKey(KeyID) ? promptUnlocked : promptLocked;
     }
 
     public void Interact(GameObject interactor)
     {
         if (_isOpen) return;
 
-        if (!PlayerInventory.HasKey(doorKeyID))
+        if (!HasRequiredKeys())
         {
-            Debug.Log($"[Door] Puerta '{doorKeyID}' bloqueada. El jugador no tiene la llave.");
             return;
         }
 
         OpenDoor();
     }
 
+    private bool HasRequiredKeys()
+    {
+        if (!PlayerInventory.HasKey(KeyID))
+        {
+            return false;
+        }
+
+        if (!needs2Keys)
+        {
+            return true;
+        }
+
+        string requiredSecondKeyID = string.IsNullOrWhiteSpace(secondKeyID)
+            ? KeyID + "_second"
+            : secondKeyID;
+
+        return PlayerInventory.HasKey(requiredSecondKeyID);
+    }
+
     private void OpenDoor()
     {
         _isOpen = true;
-        Debug.Log($"[Door] Puerta '{doorKeyID}' abierta.");
 
         if (doorAnimator != null)
         {

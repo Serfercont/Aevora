@@ -25,21 +25,14 @@ public class WallCutoutShader : MonoBehaviour
 
     void LateUpdate()
     {
-        Vector3 screen = _cam.WorldToScreenPoint(transform.position);
-        Vector2 pos = new Vector2(screen.x / Screen.width, screen.y / Screen.height);
+        // Posición del jugador en viewport (0-1)
+        Vector2 pos = _cam.WorldToViewportPoint(transform.position);
 
-        bool hidden = false;
-        Vector3 dir = transform.position - _cam.transform.position;
-
-        if (Physics.Raycast(_cam.transform.position, dir.normalized,
-            out RaycastHit hitInfo, dir.magnitude, wallLayer, QueryTriggerInteraction.Ignore))
-        {
-            if (Mathf.Abs(hitInfo.normal.z) < 0.5f) 
-                hidden = true;
-        }
-
+        // No hace falta raycast: el shader dibuja el círculo en la posición de pantalla
+        // del jugador. Solo las paredes renderizadas en esa posición lo muestran —
+        // las que no tapan al jugador quedan fuera del círculo automáticamente.
         _propBlock.SetVector("_CutoutPos", new Vector4(pos.x, pos.y, 0, 0));
-        _propBlock.SetFloat("_Cutoff", hidden ? cutoutRadius : 0f);
+        _propBlock.SetFloat("_Cutoff", cutoutRadius);
 
         foreach (var r in _wallRenderers)
             r.SetPropertyBlock(_propBlock);
