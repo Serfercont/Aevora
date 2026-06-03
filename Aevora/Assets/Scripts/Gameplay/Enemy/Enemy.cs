@@ -201,6 +201,12 @@ public class Enemy : MonoBehaviour
             shootAudioSource.Stop();
         }
 
+        PlayerInventory inventory = player?.GetComponent<PlayerInventory>();
+        if (inventory != null)
+        {
+            inventory.TakeDamage();
+        }
+
         Player playerScript = player?.GetComponent<Player>();
         Rigidbody playerRb = player?.GetComponent<Rigidbody>();
 

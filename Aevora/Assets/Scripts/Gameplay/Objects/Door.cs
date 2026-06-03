@@ -1,10 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Coloca este script en el GameObject de la puerta.
-/// Asigna el mismo doorKeyID que el keyID de la llave correspondiente.
-/// La animación de apertura es opcional: asigna un Animator con el trigger "Open".
-/// </summary>
+
 public class Door : MonoBehaviour, IInteractable
 {
     [Header("Identificador")]
@@ -27,7 +23,7 @@ public class Door : MonoBehaviour, IInteractable
 
     public string GetInteractionPrompt()
     {
-        if (_isOpen) return "";   // Ya abierta, no mostrar prompt
+        if (_isOpen) return "";
         return PlayerInventory.HasKey(doorKeyID) ? promptUnlocked : promptLocked;
     }
 

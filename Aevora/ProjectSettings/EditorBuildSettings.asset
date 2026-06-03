@@ -9,14 +9,23 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 174e722695daa754d9a72f4d4b8ee002
+  - enabled: 1
     path: Assets/Scenes/InitialScene.unity
     guid: 5ee2c79a6852b9942b92c5b3e5e3d5fa
   - enabled: 1
     path: Assets/Scenes/Level1.unity
     guid: 1fc454b5dc940154494e80fce7e1e1ef
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/EnemyTest.unity
     guid: 74f7e0ff86d4a284998b5b5c823513bc
+  - enabled: 1
+    path: Assets/Scenes/Level2.unity
+    guid: 72ccb96ec7730d04dad79574ffaf3be1
+  - enabled: 1
+    path: Assets/Scenes/Level3.unity
+    guid: 66fff69b51e0b2e42b6fa5eea2adbc48
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 1245044152ed7cb499f7c9a0fcaf29a3, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

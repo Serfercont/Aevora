@@ -4,18 +4,13 @@ using UnityEngine.UI;
 
 public class InventoryHUD : MonoBehaviour
 {
-    [Header("UI")]
-    [SerializeField] private Sprite lockpickIcon;
-    [SerializeField] private Sprite medkitIcon;
-    [SerializeField] private GameObject itemPrefab;
-    [SerializeField] private Transform barParent;
+    [Header("Textos de Cantidad")]
+    [SerializeField] private TextMeshProUGUI lockpicksText;
+    [SerializeField] private TextMeshProUGUI medkitsText;
+    [SerializeField] private TextMeshProUGUI keysText;
+    [SerializeField] private TextMeshProUGUI livesText;
 
     private PlayerInventory inventory;
-    private GameObject lockpickItem;
-    private GameObject medkitItem;
-
-    private int lastLockpicks = -1;
-    private int lastMedkits = -1;
 
     private void Start()
     {
@@ -23,83 +18,67 @@ public class InventoryHUD : MonoBehaviour
 
         if (inventory == null)
         {
-            Debug.LogWarning("No se encontró PlayerInventory en la escena.");
             return;
         }
 
-        CreateBar();
-        RefreshBar(true);
+        inventory.OnItemAdded += UpdateItemHUD;
+        inventory.OnItemUsed += UpdateItemHUD;
+        inventory.OnKeyAdded += UpdateKeyHUD;
+        inventory.OnKeysCleared += RefreshAll;
+        inventory.OnLivesChanged += UpdateLivesHUD;
+
+        RefreshAll();
     }
 
-    private void Update()
+    private void OnDestroy()
     {
-        if (inventory == null)
+        if (inventory != null)
         {
-            inventory = FindAnyObjectByType<PlayerInventory>();
-            if (inventory == null) return;
-
-            CreateBar();
-            RefreshBar(true);
-            return;
-        }
-
-        if (inventory.Lockpicks != lastLockpicks || inventory.Medkits != lastMedkits)
-        {
-            RefreshBar();
+            inventory.OnItemAdded -= UpdateItemHUD;
+            inventory.OnItemUsed -= UpdateItemHUD;
+            inventory.OnKeyAdded -= UpdateKeyHUD;
+            inventory.OnKeysCleared -= RefreshAll;
+            inventory.OnLivesChanged -= UpdateLivesHUD;
         }
     }
 
-    private void CreateBar()
+    private void RefreshAll()
     {
-        foreach (Transform child in barParent)
-        {
-            Destroy(child.gameObject);
-        }
-
-        lockpickItem = Instantiate(itemPrefab, barParent);
-        medkitItem = Instantiate(itemPrefab, barParent);
-
-        SetupItem(lockpickItem, lockpickIcon);
-        SetupItem(medkitItem, medkitIcon);
+        UpdateTextsAndIcons();
     }
 
-    private void SetupItem(GameObject itemGO, Sprite icon)
+    private void UpdateItemHUD(string itemName, float amount)
     {
-        Image iconImage = itemGO.GetComponentInChildren<Image>();
-        TextMeshProUGUI amountText = itemGO.GetComponentInChildren<TextMeshProUGUI>();
+        UpdateTextsAndIcons();
+    }
 
-        if (iconImage != null)
-        {
-            iconImage.sprite = icon;
-        }
+    private void UpdateKeyHUD(string keyID)
+    {
+        UpdateTextsAndIcons();
+    }
 
-        if (amountText != null)
+    private void UpdateLivesHUD(int currentLives)
+    {
+        if (livesText != null)
         {
-            amountText.text = "x0";
+            livesText.text = ""+currentLives;
         }
     }
 
-    private void RefreshBar(bool force = false)
+    private void UpdateTextsAndIcons()
     {
         if (inventory == null) return;
 
-        lastLockpicks = inventory.Lockpicks;
-        lastMedkits = inventory.Medkits;
+        lockpicksText.text = "x " + inventory.Lockpicks;
 
-        UpdateItem(lockpickItem, lastLockpicks);
-        UpdateItem(medkitItem, lastMedkits);
-    }
+        medkitsText.text = "x " + inventory.Medkits;
 
-    private void UpdateItem(GameObject itemGO, int amount)
-    {
-        if (itemGO == null) return;
+        int totalKeys = inventory.GetKeyCount();
+        keysText.text = "x " + totalKeys;
 
-        TextMeshProUGUI amountText = itemGO.GetComponentInChildren<TextMeshProUGUI>();
-        if (amountText != null)
+        if (livesText != null)
         {
-            amountText.text = "x" + amount;
+            livesText.text = "" + inventory.Lives;
         }
-
-        itemGO.SetActive(amount > 0);
     }
 }

@@ -1,9 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Coloca este script en el GameObject de la llave.
-/// Asigna un keyID único (ej: "key_door_1") y el mismo ID en la Door correspondiente.
-/// </summary>
+
 public class Key : MonoBehaviour, IInteractable
 {
     [Header("Identificador")]
@@ -28,7 +25,6 @@ public class Key : MonoBehaviour, IInteractable
         inventory.AddKey(keyID);
         Debug.Log($"[Key] Llave '{keyID}' recogida.");
 
-        // Desactiva el objeto para que desaparezca del mundo
         gameObject.SetActive(false);
     }
 }

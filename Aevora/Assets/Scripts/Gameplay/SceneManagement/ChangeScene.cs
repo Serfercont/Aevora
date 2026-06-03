@@ -28,10 +28,8 @@ public class ChangeScene : MonoBehaviour
 
     public void OnMainMenu(InputValue value)
     {
-        // Conservamos tu regla de seguridad: solo funciona en el menú principal
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            // Comprobamos si la acción se ha pulsado (isPressed)
             if (value.isPressed)
             {
                 LoadScene();

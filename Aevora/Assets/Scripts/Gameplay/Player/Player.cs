@@ -4,6 +4,7 @@ using Yarn.Unity;
 
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(PlayerInteraction))]
+[RequireComponent(typeof(PlayerInventory))]
 public class Player : MonoBehaviour, IPlayerState
 {
     public bool IsDead  { get; private set; } = false;
@@ -11,6 +12,7 @@ public class Player : MonoBehaviour, IPlayerState
 
     private PlayerMovement movementModule;
     private PlayerInteraction interactionModule;
+    private PlayerInventory inventoryModule;
     private InputSystem_Actions controls;
     public Vector3 LastCheckpointPosition { get; set; }
 
@@ -18,6 +20,7 @@ public class Player : MonoBehaviour, IPlayerState
     {
         movementModule = GetComponent<PlayerMovement>();
         interactionModule = GetComponent<PlayerInteraction>();
+        inventoryModule = GetComponent<PlayerInventory>();
         controls = new InputSystem_Actions();
 
         LastCheckpointPosition = transform.position;
@@ -27,12 +30,14 @@ public class Player : MonoBehaviour, IPlayerState
     {
         controls.Enable();
         controls.Player.Interact.performed += OnInteractPerformed;
+        controls.Player.Heal.performed += OnHealPerformed;
     }
-
+        
     private void OnDisable()
     {
         controls.Disable();
         controls.Player.Interact.performed -= OnInteractPerformed;
+        controls.Player.Heal.performed -= OnHealPerformed;
     }
 
     private void Update()
@@ -53,7 +58,11 @@ public class Player : MonoBehaviour, IPlayerState
         interactionModule.TryInteract();
     }
 
-
+    private void OnHealPerformed(InputAction.CallbackContext ctx)
+    {
+        if (IsDead || !CanMove) return;
+        inventoryModule.TryUseMedkit();
+    }
 
     public void Die()
     {
