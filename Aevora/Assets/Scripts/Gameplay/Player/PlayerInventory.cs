@@ -17,7 +17,7 @@ public class PlayerInventory : MonoBehaviour
     [Header("Starting Resources")]
     [SerializeField] private int startLockpicks = 2;
     [SerializeField] private int startMedkits   = 1;
-    [SerializeField] private int maxLives       = 5;
+    [SerializeField] private int maxLives       = 2;
 
     private static int _currentLockpicks = -1;
     private static int _currentMedkits = -1;
@@ -31,17 +31,21 @@ public class PlayerInventory : MonoBehaviour
     private void Awake()
     {
         if (instance != null && instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        instance = this;
+    {
+        Destroy(gameObject);
+        return;
+    }
+    instance = this;
 
-        if (_currentLockpicks == -1) _currentLockpicks = startLockpicks;
-        if (_currentMedkits == -1)   _currentMedkits = startMedkits;
-        if (_currentLives == -1)     _currentLives = maxLives;
+    if (_currentLockpicks == -1 || _currentLives <= 0) 
+    {
+        _currentLockpicks = startLockpicks;
+        _currentMedkits   = startMedkits;
+        _currentLives     = maxLives;
+        _keys.Clear();
+    }
 
-        SceneManager.sceneLoaded += OnSceneLoaded;
+    SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void OnDestroy()
@@ -66,7 +70,7 @@ public class PlayerInventory : MonoBehaviour
         {
             _keys.Clear();
             OnKeysCleared?.Invoke();
-            Debug.Log("[Inventory] Llaves reiniciadas para el nuevo nivel.");
+
         }
     }
 
@@ -79,7 +83,6 @@ public class PlayerInventory : MonoBehaviour
             
             OnItemUsed?.Invoke("botiquin", 1f);
             OnLivesChanged?.Invoke(_currentLives);
-            Debug.Log($"[Inventory] Botiquín usado. Vidas actuales: {_currentLives}");
         }
     }
 
@@ -87,7 +90,6 @@ public class PlayerInventory : MonoBehaviour
     {
         _currentLives = Mathf.Max(0, _currentLives - 1);
         OnLivesChanged?.Invoke(_currentLives);
-        Debug.Log($"[Inventory] ¡Jugador detectado! Vidas restantes: {_currentLives}");
 
         if (_currentLives <= 0)
         {
@@ -97,7 +99,10 @@ public class PlayerInventory : MonoBehaviour
 
     private void GameOver()
     {
-        Debug.Log("[Inventory] ¡0 Vidas! Volviendo al menú principal...");
+        _currentLockpicks = startLockpicks;
+        _currentMedkits   = startMedkits;
+        _currentLives     = maxLives;
+        _keys.Clear();
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -109,7 +114,6 @@ public class PlayerInventory : MonoBehaviour
         {
             case "ganzua":   _currentLockpicks += qty; break;
             case "botiquin": _currentMedkits   += qty; break;
-            default: Debug.LogWarning($"[PlayerInventory] Unknown item '{itemName}'"); return;
         }
         OnItemAdded?.Invoke(itemName, amount);
     }
@@ -122,7 +126,6 @@ public class PlayerInventory : MonoBehaviour
         {
             case "ganzua":   _currentLockpicks = Mathf.Max(0, _currentLockpicks - qty); break;
             case "botiquin": _currentMedkits   = Mathf.Max(0, _currentMedkits   - qty); break;
-            default: Debug.LogWarning($"[PlayerInventory] Unknown item '{itemName}'"); return;
         }
         OnItemUsed?.Invoke(itemName, amount);
     }
