@@ -46587,6 +46587,75 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 94c9c938c07cec84c9b502248fcc9afc, type: 3}
   m_PrefabInstance: {fileID: 1131782428}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1132652148
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1375131072417913344, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_Name
+      value: NarrativeEmergent (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -16.527847
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 31.634686
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4132661347120408229, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6208423592588017335, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: image
+      value: 
+      objectReference: {fileID: 21300000, guid: d5578e989e5dde946ac9e0e07e4738c6, type: 3}
+    - target: {fileID: 6208423592588017335, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
+      propertyPath: readableText
+      value: "Richie:\n\r\nPlano del nuevo prototipo de dirigible para la armada
+        de hierro.\r\nQue monstruosidad\u2026 Joder! Nos estamos quedando sin tiempo
+        ante que el Imperio decida empezar su conquista por Europa. \r\nSi no conseguimos
+        empezar una guerra entre las grandes casas y millares de vidas se perder\xE1n.
+        Tengo que darme prisa y encontrar esos documentos.\r\n"
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a9398dfcd2613224e99f9f38b9323f9c, type: 3}
 --- !u!1001 &1133012565
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -98767,3 +98836,4 @@ SceneRoots:
   - {fileID: 657945587}
   - {fileID: 1714879998}
   - {fileID: 1755915982758724262}
+  - {fileID: 1132652148}
