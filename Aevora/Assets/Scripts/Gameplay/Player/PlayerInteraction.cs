@@ -4,7 +4,7 @@ public class PlayerInteraction : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float     interactRange    = 2f;
-    [SerializeField] private LayerMask interactableLayer;
+    [SerializeField] private LayerMask[] interactablesLayer;
 
     [Header("References")]
     [SerializeField] private FloatingInteractionUI interactionUI;
@@ -59,7 +59,7 @@ public class PlayerInteraction : MonoBehaviour
 
     private IInteractable FindNearest()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, interactRange, interactableLayer);
+        Collider[] hits = Physics.OverlapSphere(transform.position, interactRange, interactablesLayer[0] | interactablesLayer[1]);
         foreach (Collider hit in hits)
         {
             IInteractable found = hit.GetComponent<IInteractable>();
