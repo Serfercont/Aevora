@@ -16,11 +16,19 @@ public class SpatialNarrativeInteractable : MonoBehaviour, IInteractable
     [Header("Comportamiento")]
     [SerializeField] private bool lockPlayerMovement = true;
 
+    [SerializeField] private bool isZekeTortureReport = false;
+    public static bool FoundZekeReport { get; private set; } = false;
+
     public void Interact(GameObject player)
     {
         SpatialNarrativeUI ui = SpatialNarrativeUI.GetOrCreate();
         if (ui == null)
             return;
+
+        if (isZekeTortureReport)
+        {
+            FoundZekeReport = true;
+        }
 
         Player playerController = player != null ? player.GetComponent<Player>() : null;
         ui.Open(image, ResolveReadableText(), playerController, lockPlayerMovement);

@@ -82,3 +82,8 @@ title: ConversacionRichieTommy
     <<toggle_move Player true>>
 <<endif>>
 ===
+
+title: DocumentoInformeZeke
+---
+<<set $encontroInformeZeke = true>>
+===
